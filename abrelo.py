@@ -1,8 +1,10 @@
+from json.encoder import INFINITY
 from operator import truediv
 from textwrap import fill
 from tkinter import *
 from tkinter import ttk
 from datetime import date, datetime
+from tokenize import Double
 from turtle import back, left
 from urllib.parse import urldefrag
 import webbrowser
@@ -13,6 +15,7 @@ firefox_path = r'C:\Program Files\Mozilla Firefox\firefox.exe'
 edge_path = r'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
 
 now = 0
+timeUntilOpen = INFINITY;
 
 # -- functions -- #
 def registerBrowsers():
@@ -35,10 +38,17 @@ def openBrowsers():
     webbrowser.get('chrome').open(url.get())
     webbrowser.get('edge').open(url.get())
     print('done')  
-def waitUntilTime(hour:int, minute:int):
-    while (now != f"{hour}:{minute}:00"):
+def waitUntilTime(hour:IntVar, minute:IntVar):
+    global now
+    now = datetime.now()
+    print(hour.get())
+    print(minute.get())
+    while (now.hour != hour.get()):
+        print("waiting for hour")
+        now = datetime.now()       
+    while (now.minute != minute.get()):
+        print("waiting for minute")
         now = datetime.now()
-        now = now.strftime("%H:%M:%S")
 def validateSpinbox(input, widgetname):
     # check to see if numeric
     if input.isdigit():
@@ -62,7 +72,9 @@ def validateSpinbox(input, widgetname):
         print("not numeric")
         return False
 def beginScheduledLaunch():
-    #waitUntilTime()
+    if url.get() == "":
+        return
+    waitUntilTime(hour, minute)
     registerBrowsers()
     openBrowsers()
     
